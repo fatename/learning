@@ -1,0 +1,26 @@
+package com.example.springbootaches.ontroller;
+
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+
+/*
+注意：
+	当使用thymeleaf模板引擎的时候不能够使用@RestController注解，解析如下
+	解决:在controller中使用了注解@RestController,修改注解为@Controller.
+
+原因：RestController = Controller + ResponseBody.加上RestController
+返回的内容是你return中的内容，如果是return "Hello World"，页面显示的就是Hello World。
+加上Controller，返回的是return中对应的页面,比如return “hello”,页面的名称是hello。
+*/
+@Controller
+public class OtherController {
+
+    @RequestMapping("/success")
+    public String index(Model model){
+        model.addAttribute("msg","我是返回成功的数据");
+        return "index";
+    }
+}

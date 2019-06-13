@@ -1,0 +1,37 @@
+package com.example.sprint.controller;
+
+
+import com.example.sprint.bean.User;
+import com.example.sprint.repostory.UserRes;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+
+
+@RestController
+public class UserConteroller {
+
+    @Autowired
+    UserRes userRes;
+
+
+//    @GetMapping("/user/{id}")
+//    public User getUser(@PathVariable("id") Integer id){
+//         User user= userRes.findOne(id);
+//         return user;
+//    }
+    @GetMapping("/user")
+    public  User addUer(User user){
+       User users= userRes.save(user);
+       return users;
+    }
+
+    @GetMapping("uu/{id}")
+    public User getUser(@PathVariable("id") Integer id){
+        User users=userRes.findById(id).orElse(null); //特别注意这里的变化
+        return users;
+    }
+}

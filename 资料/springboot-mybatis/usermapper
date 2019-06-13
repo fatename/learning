@@ -1,0 +1,8 @@
+package com.cn.winlook.mapper;
+
+import com.cn.winlook.bean.UserBean;
+
+public interface UserMapper {
+
+    UserBean getUserById(Integer id);
+}

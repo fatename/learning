@@ -1,0 +1,100 @@
+package com.example.springbootaches.service;
+
+import com.example.springbootaches.mapper.Usermapper;
+import com.example.springbootaches.model.UserModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.*;
+import org.springframework.stereotype.Service;
+
+@Service
+@CacheConfig(cacheNames = {"user"})//抽取缓存的公共部分
+public class UserService {
+
+    @Autowired
+    Usermapper usermapper;
+/*
+* @Cacheable将方法的运行结果进行缓存，以后再需要直接从缓存获取，不用调用方法
+*
+* Cachemanager管理多个缓存组建，对于缓存的正真CRUD操作在擦车组件中，每一个缓存组建都有一个唯一的名字
+*属性值：
+*       cacheNames/value:指定缓存的名字
+*       key：缓存时用到的key，可以用它来制定，默认使用的是方法的参数的值
+*               编写SPEL
+*       keyGenerator:key的生成器，可以自己来指定key的生成器的Id,与key二选一使用
+*       cacheManager缓存管理器（指定缓存管理器），或者cacheresolver二选一使用
+*       condition：指定符合条件的情况下才缓存
+*       unless:否定缓存，当unless指定的条件为true，方法的返回值不会缓存，可以获取到结果进行判断
+*       sync:是否使用异步模式
+* org.springframework.boot.autoconfigure.cache.GenericCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.JCacheCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.EhCacheCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.HazelcastCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.InfinispanCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.CouchbaseCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.RedisCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.CaffeineCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.SimpleCacheConfiguration
+* org.springframework.boot.autoconfigure.cache.NoOpCacheConfiguration
+* SimpleCacheConfiguration：开始生效
+* 给容器注册一个cachemanager类，concurrentMapcachemanager
+* 可以获取和创建一个concurrentMapcache类型的缓存组件，结果保存在concurrentMap
+* key/keyGenerator 二选一
+* condition ="#a0>1"第一个参数大于一的时候才会缓存
+* */
+   @Cacheable(cacheNames = {"user"}/*,*keyGenerator="MykeyGEnertor",condition = "#id0<1"**/)
+    public UserModel getUser(Integer id){
+        System.out.println("查询员工"+id);
+        return usermapper.getUserByID(id);
+    }
+
+    public UserModel getAll(){
+      return  usermapper.getUser();
+    }
+
+    /**
+     * cacheput既调用方法又跟新缓存数据
+     *  key:1  value:之前的值
+     * 修改了数据库的某个数据，同时更新缓存
+     * 运行时机：先调用目标方法，然后再将方法缓存起来
+     * 测试步骤：
+     *      1：先查询一号员工，查到的结果会放在缓存中
+     *      2，以后查询还是之前的员工
+     *          key = "#userModel.id"使用的是传入的员工id
+     * */
+    @CachePut(value = "user",key = "#userModel.id")
+    public UserModel updateUser(UserModel userModel){
+        System.out.println("更新员工的信息:"+userModel);
+        usermapper.updateUser(userModel);
+        return userModel;
+    }
+    /*
+    * @cachevict:缓存清除
+    * key:指定要清除的缓存，默认的是参数id
+    * allEntries=true,指定清除这个缓存中所有的数据
+    * beforeInvocation=false，缓存的清除是否在方法之前清除
+    *   默认实在方法之后执行
+    * */
+    @CacheEvict(value = "user",key = "#id")
+    public void delete(Integer id){
+        System.out.println("删除了员工"+id);
+        usermapper.deleteUser(id);
+    }
+
+    /*
+    *    @Caching定义复杂的缓存规则
+    *   因为有cacheput注解，所以每次cacheable注解调用的时候都会重新查找一次数据库，
+    *   而使用cacheput方法的时候就不会再次查询数据库
+    * */
+
+    @Caching(
+         cacheable = {
+                 @Cacheable(/*value = "user",*/key = "#name")
+         },
+         put ={
+                 @CachePut(/*value = "user",*/key = "#result.id")
+         }
+    )
+    public UserModel getUserByName(String name){
+        return usermapper.getUserByName(name);
+    }
+}

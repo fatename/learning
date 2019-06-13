@@ -1,0 +1,27 @@
+package com.example.springmybatis.controller;
+
+
+import com.example.springmybatis.mapper.UserMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RestController;
+import com.example.springmybatis.bean.user;
+
+@RestController
+public class UserController {
+
+    @Autowired
+    UserMapper userMapper;
+
+    @GetMapping("/user/{id}")
+    public user findUserById(@PathVariable("id") Integer id){
+
+        return userMapper.findUserById(id);
+    }
+    @GetMapping("/dept")
+     public user insertUser(user user){
+        userMapper.addUser(user);
+        return user;
+     }
+}

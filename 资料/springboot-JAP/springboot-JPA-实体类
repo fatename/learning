@@ -1,0 +1,38 @@
+package com.example.sprint.bean;
+
+
+import javax.persistence.*;
+
+//使用jpa注解配置映射关系
+@Entity//告诉jpa这是一个和数据库表映射的备案bean类
+@Table(name = "school")//指定与那个数据库表映射，如果省略默认表明为类名（此处默认为user）
+public class User {
+
+    @Id//这是一个主键
+    @GeneratedValue(strategy = GenerationType.IDENTITY)//自增主键
+    private Integer id;
+
+    @Column(name = "school_name",length = 50)//制定与数据库列对应，没有默认的是和字段名相同
+    private String name;
+
+    public User(Integer id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+//此处要是嫌没有参数的构造方法，要是没有则会出现（No default constructor for entity错误）
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+}

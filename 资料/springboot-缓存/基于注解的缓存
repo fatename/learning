@@ -1,0 +1,39 @@
+package com.example.springbootaches.service;
+
+import com.example.springbootaches.mapper.Usermapper;
+import com.example.springbootaches.model.UserModel;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+
+@Service
+public class UserService {
+
+    @Autowired
+    Usermapper usermapper;
+/*
+* @Cacheable将方法的运行结果进行缓存，以后再需要直接从缓存获取，不用调用方法
+*
+* Cachemanager管理多个缓存组建，对于缓存的正真CRUD操作在擦车组件中，每一个缓存组建都有一个唯一的名字
+*属性值：
+*       cacheNames/value:指定缓存的名字
+*       key：缓存时用到的key，可以用它来制定，默认使用的是方法的参数的值
+*               编写SPEL
+*       keyGenerator:key的生成器，可以自己来指定key的生成器的Id,与key二选一使用
+*       cacheManager缓存管理器（指定缓存管理器），或者cacheresolver二选一使用
+*       condition：指定符合条件的情况下才缓存
+*       unless:否定缓存，当unless指定的条件为true，方法的返回值不会缓存，可以获取到结果进行判断
+*       sync:是否使用异步模式
+* */
+
+	//基本的缓存使用方法
+    @Cacheable(cacheNames = {"user"})
+    public UserModel getUser(Integer id){
+        System.out.println("查询员工"+id);
+        return usermapper.getUserByID(id);
+    }
+
+    public UserModel getAll(){
+      return  usermapper.getUser();
+    }
+}

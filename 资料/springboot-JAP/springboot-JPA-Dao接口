@@ -1,0 +1,11 @@
+package com.example.sprint.repostory;
+
+import com.example.sprint.bean.User;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+
+//继承JpaRepository来完成对于数据库的操作
+public interface UserRes extends JpaRepository<User,Integer> {
+
+
+}

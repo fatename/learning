@@ -1,0 +1,23 @@
+package com.example.springmybatis.mapper;
+
+import org.apache.ibatis.annotations.*;
+import com.example.springmybatis.bean.user;
+
+//指定这是一个操作数据库的mapper
+@Mapper
+public interface UserMapper {
+
+    @Select("select * from user where id=#{id}")
+    public user findUserById(Integer id);
+
+    @Delete("delete from user where id=#{id}")
+    public int deleteById(Integer id);
+
+    @Options(useGeneratedKeys = true,keyProperty = "id")//配置主键自增
+    @Insert("insert into user(name) values (#{name})")
+    public int addUser(user user);
+
+
+    @Update("update user set name=#{name} where id=#{id}")
+    public int updateUser(user user);
+}

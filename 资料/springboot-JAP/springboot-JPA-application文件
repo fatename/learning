@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    username: root
+    password: root
+    url: jdbc:mysql://localhost:3306/jdbc?useUnicode=true&characterEncoding=utf8&serverTimezone=GMT%2B8&useSSL=false  //应该加上时区
+    driver-class-name: com.mysql.jdbc.Driver
+  jpa:
+    hibernate:
+      #更新或者创建数据库表
+      ddl-auto: update
+      #控制台显示sql语句
+    show-sql: true

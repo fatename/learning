@@ -1,0 +1,23 @@
+package com.cn.winlook.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+@Configuration
+public class config implements WebMvcConfigurer {
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+       registry.addViewController("/").setViewName("index");//注意前面才是访问的url，后面的才是资源的名称
+        registry.addViewController("/login.html").setViewName("login");
+    }
+    //注册拦截器
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new LoginHanderInterceptor()).addPathPatterns("/**")
+                .excludePathPatterns("/login.html","/loginuser","/static/**");
+    }
+}
